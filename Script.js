@@ -1,670 +1,217 @@
-/* =========================================================
-   CHRONOS V1
-   ========================================================= */
-
-
-/* ---------------------------------------------------------
-   ELEMENTS
-   --------------------------------------------------------- */
-
-const chat = document.getElementById("chat");
-const textInput = document.getElementById("textInput");
-const sendButton = document.getElementById("sendButton");
-const micButton = document.getElementById("micButton");
-const backupButton = document.getElementById("backupButton");
-
-const statusElement = document.getElementById("status");
-const orb = document.getElementById("orb");
-
-const stopwatchDisplay = document.getElementById("stopwatch");
-const countdownDisplay = document.getElementById("countdown");
-
-
-/* ---------------------------------------------------------
-   CHAT
-   --------------------------------------------------------- */
-
-function addMessage(text, type) {
-
-    const message = document.createElement("div");
-
-    message.className = "message " + type;
-
-    message.textContent = text;
-
-    chat.appendChild(message);
-
-    chat.scrollTop = chat.scrollHeight;
+* {
+    box-sizing: border-box;
 }
 
-
-function userMessage(text) {
-
-    addMessage(text, "user");
-
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
 }
 
-
-function chronosMessage(text) {
-
-    addMessage(text, "chronos");
-
-    speak(text);
-
+body {
+    background: #08080f;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
-
-/* ---------------------------------------------------------
-   VOICE OUTPUT
-   --------------------------------------------------------- */
-
-function speak(text) {
-
-    if (!("speechSynthesis" in window)) {
-        return;
-    }
-
-    window.speechSynthesis.cancel();
-
-    const voice = new SpeechSynthesisUtterance(text);
-
-    voice.lang = "en-US";
-    voice.rate = 1;
-    voice.pitch = 1;
-
-    window.speechSynthesis.speak(voice);
-
+button {
+    border: 0;
+    color: white;
+    cursor: pointer;
 }
 
+.app {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+    padding: 25px 16px;
+}
 
-/* ---------------------------------------------------------
-   COMMAND SYSTEM
-   --------------------------------------------------------- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-function processCommand(command) {
+h1 {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: 4px;
+}
 
-    const text = command.toLowerCase().trim();
+header p {
+    margin: 5px 0 0;
+    color: #888;
+}
 
-    if (!text) {
-        return;
-    }
+#status {
+    background: #171720;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+}
 
+.orb {
+    width: 145px;
+    height: 145px;
+    margin: 30px auto;
 
-    /* HELP */
+    border-radius: 50%;
 
-    if (
-        text.includes("help") ||
-        text.includes("what can you do")
-    ) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-        chronosMessage(
-            "I can start timers, run a stopwatch, enter Backup Mode, and respond to basic commands."
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #bd6cff,
+            #5925a8 50%,
+            #171020
         );
 
-        return;
-    }
+    box-shadow:
+        0 0 30px rgba(150, 70, 255, 0.5);
 
+    transition: 0.3s;
+}
 
-    /* HELLO */
+.orb.listening {
+    transform: scale(1.1);
+}
 
-    if (
-        text === "hello" ||
-        text === "hi" ||
-        text.includes("hello chronos")
-    ) {
+.orb span {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
 
-        chronosMessage("Hello. I'm Chronos.");
+.chat {
+    min-height: 170px;
+    max-height: 280px;
+    overflow-y: auto;
+}
 
-        return;
-    }
+.message {
+    max-width: 85%;
+    width: fit-content;
 
+    margin: 8px 0;
+    padding: 11px 14px;
 
-    /* TIME */
+    border-radius: 15px;
 
-    if (
-        text.includes("what time") ||
-        text === "time"
-    ) {
+    line-height: 1.4;
+}
 
-        const now = new Date();
+.message.chronos {
+    background: #171720;
+}
 
-        const time = now.toLocaleTimeString(
-            "en-US",
-            {
-                hour: "numeric",
-                minute: "2-digit"
-            }
-        );
+.message.user {
+    margin-left: auto;
+    background: #602db5;
+}
 
-        chronosMessage("It is " + time + ".");
+.panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+}
 
-        return;
-    }
+.timer {
+    background: #111119;
+    border: 1px solid #24242e;
+    border-radius: 15px;
+    padding: 14px;
+}
 
+.timer small {
+    color: #777;
+}
 
-    /* STOPWATCH */
+.timer strong {
+    display: block;
+    margin: 8px 0 12px;
+    font-size: 23px;
+}
 
-    if (
-        text.includes("start stopwatch") ||
-        text.includes("start the stopwatch")
-    ) {
+.timer button {
+    background: #252530;
+    padding: 7px;
+    border-radius: 7px;
+    font-size: 10px;
+    margin: 2px;
+}
 
-        startStopwatch();
+.talk,
+.backup {
+    width: 100%;
+    padding: 15px;
+    margin-top: 12px;
 
-        chronosMessage("Stopwatch started.");
+    border-radius: 14px;
 
-        return;
-    }
+    font-weight: bold;
+}
 
-
-    if (
-        text.includes("stop stopwatch") ||
-        text.includes("stop the stopwatch")
-    ) {
-
-        stopStopwatch();
-
-        chronosMessage("Stopwatch stopped.");
-
-        return;
-    }
-
-
-    if (
-        text.includes("reset stopwatch") ||
-        text.includes("reset the stopwatch")
-    ) {
-
-        resetStopwatch();
-
-        chronosMessage("Stopwatch reset.");
-
-        return;
-    }
-
-
-    /* ONE MINUTE */
-
-    if (
-        text.includes("one minute") ||
-        text.includes("1 minute") ||
-        text.includes("one-minute timer")
-    ) {
-
-        startTimer(60);
-
-        chronosMessage("One minute timer started.");
-
-        return;
-    }
-
-
-    /* FIVE MINUTES */
-
-    if (
-        text.includes("five minutes") ||
-        text.includes("5 minutes")
-    ) {
-
-        startTimer(300);
-
-        chronosMessage("Five minute timer started.");
-
-        return;
-    }
-
-
-    /* BACKUP MODE */
-
-    if (
-        text.includes("backup mode") ||
-        text.includes("backup")
-    ) {
-
-        runBackupMode();
-
-        return;
-    }
-
-
-    /* STOP TIMER */
-
-    if (
-        text.includes("stop timer") ||
-        text.includes("cancel timer")
-    ) {
-
-        resetTimer();
-
-        chronosMessage("Timer stopped.");
-
-        return;
-    }
-
-
-    /* UNKNOWN */
-
-    chronosMessage(
-        "I don't understand that command yet. Try saying help."
+.talk {
+    background: linear-gradient(
+        135deg,
+        #762dca,
+        #b12c8b
     );
-
 }
 
+.backup {
+    background: #181820;
+    border: 1px solid #292934;
+}
 
-/* ---------------------------------------------------------
-   TEXT INPUT
-   --------------------------------------------------------- */
+.input {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
 
-function sendText() {
+.input input {
+    min-width: 0;
+    flex: 1;
 
-    const text = textInput.value.trim();
+    padding: 13px;
 
-    if (!text) {
-        return;
+    border-radius: 12px;
+    border: 1px solid #292934;
+
+    background: #101017;
+    color: white;
+    outline: none;
+}
+
+.input button {
+    background: #602db5;
+    border-radius: 12px;
+    padding: 0 16px;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #444;
+    font-size: 10px;
+}
+
+@media (max-width: 380px) {
+
+    .panel {
+        grid-template-columns: 1fr;
     }
 
-    userMessage(text);
-
-    textInput.value = "";
-
-    processCommand(text);
-
-}
-
-
-sendButton.addEventListener("click", sendText);
-
-
-textInput.addEventListener("keydown", function(event) {
-
-    if (event.key === "Enter") {
-
-        sendText();
-
+    .orb {
+        width: 125px;
+        height: 125px;
     }
-
-});
-
-
-/* ---------------------------------------------------------
-   SPEECH RECOGNITION
-   --------------------------------------------------------- */
-
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-let recognition = null;
-let listening = false;
-
-
-if (SpeechRecognition) {
-
-    recognition = new SpeechRecognition();
-
-    recognition.lang = "en-US";
-
-    recognition.continuous = false;
-
-    recognition.interimResults = false;
-
-
-    recognition.onstart = function() {
-
-        listening = true;
-
-        statusElement.textContent = "LISTENING";
-
-        orb.classList.add("listening");
-
-        micButton.querySelector("span").textContent =
-            "Listening...";
-
-    };
-
-
-    recognition.onresult = function(event) {
-
-        const result =
-            event.results[0][0].transcript;
-
-        userMessage(result);
-
-        processCommand(result);
-
-    };
-
-
-    recognition.onerror = function(event) {
-
-        console.log(
-            "Speech recognition error:",
-            event.error
-        );
-
-        chronosMessage(
-            "I couldn't hear that. Please try again."
-        );
-
-    };
-
-
-    recognition.onend = function() {
-
-        listening = false;
-
-        statusElement.textContent = "READY";
-
-        orb.classList.remove("listening");
-
-        micButton.querySelector("span").textContent =
-            "Talk to Chronos";
-
-    };
-
 }
-
-
-micButton.addEventListener("click", function() {
-
-    if (!recognition) {
-
-        chronosMessage(
-            "Voice recognition is not available in this browser."
-        );
-
-        return;
-    }
-
-
-    if (listening) {
-
-        recognition.stop();
-
-        return;
-    }
-
-
-    try {
-
-        recognition.start();
-
-    } catch (error) {
-
-        console.log(error);
-
-    }
-
-});
-
-
-/* ---------------------------------------------------------
-   STOPWATCH
-   --------------------------------------------------------- */
-
-let stopwatchSeconds = 0;
-let stopwatchInterval = null;
-
-
-function formatStopwatch(seconds) {
-
-    const hours =
-        Math.floor(seconds / 3600);
-
-    const minutes =
-        Math.floor((seconds % 3600) / 60);
-
-    const secs =
-        seconds % 60;
-
-
-    return (
-        String(hours).padStart(2, "0") +
-        ":" +
-        String(minutes).padStart(2, "0") +
-        ":" +
-        String(secs).padStart(2, "0")
-    );
-
-}
-
-
-function updateStopwatch() {
-
-    stopwatchDisplay.textContent =
-        formatStopwatch(stopwatchSeconds);
-
-}
-
-
-function startStopwatch() {
-
-    if (stopwatchInterval !== null) {
-        return;
-    }
-
-
-    stopwatchInterval = setInterval(function() {
-
-        stopwatchSeconds++;
-
-        updateStopwatch();
-
-    }, 1000);
-
-}
-
-
-function stopStopwatch() {
-
-    clearInterval(stopwatchInterval);
-
-    stopwatchInterval = null;
-
-}
-
-
-function resetStopwatch() {
-
-    stopStopwatch();
-
-    stopwatchSeconds = 0;
-
-    updateStopwatch();
-
-}
-
-
-/* ---------------------------------------------------------
-   COUNTDOWN TIMER
-   --------------------------------------------------------- */
-
-let timerSeconds = 0;
-let timerInterval = null;
-
-
-function updateCountdown() {
-
-    const minutes =
-        Math.floor(timerSeconds / 60);
-
-    const seconds =
-        timerSeconds % 60;
-
-
-    countdownDisplay.textContent =
-        String(minutes).padStart(2, "0") +
-        ":" +
-        String(seconds).padStart(2, "0");
-
-}
-
-
-function startTimer(seconds) {
-
-    clearInterval(timerInterval);
-
-    timerSeconds = seconds;
-
-    updateCountdown();
-
-
-    timerInterval = setInterval(function() {
-
-        timerSeconds--;
-
-        updateCountdown();
-
-
-        if (timerSeconds <= 0) {
-
-            clearInterval(timerInterval);
-
-            timerInterval = null;
-
-            chronosMessage(
-                "Timer finished."
-            );
-
-            if (
-                "Notification" in window &&
-                Notification.permission === "granted"
-            ) {
-
-                new Notification(
-                    "Chronos",
-                    {
-                        body: "Timer finished."
-                    }
-                );
-
-            }
-
-        }
-
-    }, 1000);
-
-}
-
-
-function resetTimer() {
-
-    clearInterval(timerInterval);
-
-    timerInterval = null;
-
-    timerSeconds = 0;
-
-    updateCountdown();
-
-}
-
-
-/* ---------------------------------------------------------
-   NOTIFICATIONS
-   --------------------------------------------------------- */
-
-async function requestNotifications() {
-
-    if (!("Notification" in window)) {
-        return;
-    }
-
-
-    if (Notification.permission === "default") {
-
-        try {
-
-            await Notification.requestPermission();
-
-        } catch (error) {
-
-            console.log(error);
-
-        }
-
-    }
-
-}
-
-
-requestNotifications();
-
-
-/* ---------------------------------------------------------
-   BACKUP MODE
-   --------------------------------------------------------- */
-
-function runBackupMode() {
-
-    statusElement.textContent = "BACKUP";
-
-    orb.classList.add("listening");
-
-    userMessage("Backup Mode");
-
-
-    chronosMessage(
-        "Backup Mode activated. Checking Chronos..."
-    );
-
-
-    setTimeout(function() {
-
-        chronosMessage(
-            "Checking interface..."
-        );
-
-    }, 900);
-
-
-    setTimeout(function() {
-
-        chronosMessage(
-            "Checking timers..."
-        );
-
-    }, 1800);
-
-
-    setTimeout(function() {
-
-        chronosMessage(
-            "Checking voice system..."
-        );
-
-    }, 2700);
-
-
-    setTimeout(function() {
-
-        statusElement.textContent = "READY";
-
-        orb.classList.remove("listening");
-
-        chronosMessage(
-            "Backup check complete. Chronos is ready."
-        );
-
-    }, 3800);
-
-}
-
-
-backupButton.addEventListener(
-    "click",
-    runBackupMode
-);
-
-
-/* ---------------------------------------------------------
-   INITIALIZATION
-   --------------------------------------------------------- */
-
-updateStopwatch();
-
-updateCountdown();
-
-console.log(
-    "Chronos V1 loaded successfully."
-);
