@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#09090f">
+
+    <title>Chronos</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <header>
+            <div>
+                <h1>CHRONOS</h1>
+                <p>Personal Assistant</p>
+            </div>
+
+            <div id="status" class="status">
+                READY
+            </div>
+        </header>
+
+
+        <section class="orb-container">
+            <div id="orb" class="orb">
+                <span>CHRONOS</span>
+            </div>
+        </section>
+
+
+        <section class="chat" id="chat">
+
+            <div class="message chronos">
+                Hello. I'm Chronos.
+            </div>
+
+            <div class="message chronos">
+                How can I help you?
+            </div>
+
+        </section>
+
+
+        <section class="timer-panel">
+
+            <div class="timer-box">
+                <small>STOPWATCH</small>
+                <strong id="stopwatch">00:00:00</strong>
+
+                <div class="timer-buttons">
+                    <button onclick="startStopwatch()">START</button>
+                    <button onclick="stopStopwatch()">STOP</button>
+                    <button onclick="resetStopwatch()">RESET</button>
+                </div>
+            </div>
+
+
+            <div class="timer-box">
+                <small>TIMER</small>
+                <strong id="countdown">00:00</strong>
+
+                <div class="timer-buttons">
+                    <button onclick="startTimer(60)">1 MIN</button>
+                    <button onclick="startTimer(300)">5 MIN</button>
+                    <button onclick="resetTimer()">RESET</button>
+                </div>
+            </div>
+
+        </section>
+
+
+        <section class="controls">
+
+            <button id="micButton" class="mic-button">
+                🎙️
+                <span>Talk to Chronos</span>
+            </button>
+
+            <button id="backupButton" class="backup-button">
+                🛠️ Backup Mode
+            </button>
+
+        </section>
+
+
+        <section class="input-area">
+
+            <input
+                id="textInput"
+                type="text"
+                placeholder="Type to Chronos..."
+                autocomplete="off"
+            >
+
+            <button id="sendButton">
+                SEND
+            </button>
+
+        </section>
+
+
+        <footer>
+            Chronos V1
+        </footer>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
