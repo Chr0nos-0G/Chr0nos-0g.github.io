@@ -1,0 +1,284 @@
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background: #07070c;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+    padding:
+        max(20px, env(safe-area-inset-top))
+        18px
+        max(20px, env(safe-area-inset-bottom))
+        18px;
+}
+
+
+/* HEADER */
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 25px;
+    letter-spacing: 4px;
+}
+
+header p {
+    margin: 5px 0 0;
+    color: #888;
+    font-size: 13px;
+}
+
+.status {
+    padding: 7px 10px;
+    border-radius: 20px;
+    background: #14141d;
+    color: #8d8d9c;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+
+/* ORB */
+
+.orb-container {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.orb {
+    width: 145px;
+    height: 145px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(circle at 35% 30%, #b65cff, #5424a5 45%, #171026 75%);
+
+    box-shadow:
+        0 0 25px rgba(130, 70, 255, 0.45),
+        0 0 70px rgba(90, 30, 180, 0.25);
+
+    transition: 0.3s;
+}
+
+.orb span {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.orb.listening {
+    transform: scale(1.08);
+
+    box-shadow:
+        0 0 30px rgba(255, 70, 180, 0.7),
+        0 0 90px rgba(150, 40, 255, 0.5);
+}
+
+
+/* CHAT */
+
+.chat {
+    min-height: 180px;
+    max-height: 300px;
+    overflow-y: auto;
+
+    padding: 5px;
+    margin-bottom: 15px;
+}
+
+.message {
+    width: fit-content;
+    max-width: 85%;
+
+    padding: 11px 14px;
+    margin: 8px 0;
+
+    border-radius: 15px;
+
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.message.chronos {
+    background: #171722;
+    border-bottom-left-radius: 4px;
+}
+
+.message.user {
+    margin-left: auto;
+    background: #5b2bb5;
+    border-bottom-right-radius: 4px;
+}
+
+
+/* TIMERS */
+
+.timer-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.timer-box {
+    background: #111119;
+    border: 1px solid #22222e;
+    border-radius: 15px;
+    padding: 14px;
+}
+
+.timer-box small {
+    color: #777;
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+.timer-box strong {
+    display: block;
+    margin: 7px 0 12px;
+    font-size: 24px;
+    font-variant-numeric: tabular-nums;
+}
+
+.timer-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.timer-buttons button {
+    flex: 1;
+    border: 0;
+    border-radius: 8px;
+    padding: 7px 4px;
+    background: #22222e;
+    color: white;
+    font-size: 9px;
+}
+
+
+/* CONTROLS */
+
+.controls {
+    display: grid;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.mic-button,
+.backup-button {
+    border: 0;
+    border-radius: 14px;
+    padding: 15px;
+
+    color: white;
+    font-weight: bold;
+}
+
+.mic-button {
+    background: linear-gradient(135deg, #762dca, #b12c8b);
+}
+
+.backup-button {
+    background: #17171f;
+    border: 1px solid #292936;
+}
+
+
+/* INPUT */
+
+.input-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.input-area input {
+    flex: 1;
+
+    min-width: 0;
+
+    border: 1px solid #282833;
+    border-radius: 12px;
+
+    background: #101017;
+    color: white;
+
+    padding: 13px;
+    outline: none;
+}
+
+.input-area input:focus {
+    border-color: #7040c5;
+}
+
+.input-area button {
+    border: 0;
+    border-radius: 12px;
+    padding: 0 15px;
+
+    background: #5c2eae;
+    color: white;
+    font-weight: bold;
+}
+
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    color: #444;
+    font-size: 10px;
+    margin-top: 20px;
+}
+
+
+/* SMALL SCREENS */
+
+@media (max-width: 380px) {
+
+    .timer-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .orb {
+        width: 125px;
+        height: 125px;
+    }
+
+}
